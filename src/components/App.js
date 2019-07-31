@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import ReposList from './ReposList'
-import { Link, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 /* import About from './about';
 import ProductsList from './ProductsList'
 import ProductsDetail from './ProductDetail'; */

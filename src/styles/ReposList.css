@@ -1,0 +1,18 @@
+.pagination1 {
+    display: inline-block;
+  }
+  
+  .pagination1 a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+  .pagination1 a:hover:not(:active) {
+    background-color: #ddd;
+    border-radius: 5px;
+  }
+  .center {
+    text-align: center;
+  }
+  
