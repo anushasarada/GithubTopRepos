@@ -5,13 +5,11 @@ import '../styles/ReposList.css'
 
 class ReposList extends React.Component {
     state = {
-        status: 'LOADING',
-        repos: []
+        repos: [],
+        error:{}
     }
     changePage = (type) => {
-        this.setState({
-            status: 'LOADING'
-        });
+        this.props.loading();
         if (type === 'all') {
             const javascriptPromise = axios.get(`https://api.github.com/search/repositories?q=topic:javascript&sort=stars&order=desc`)
                 .then(response => response.data)
@@ -45,8 +43,8 @@ class ReposList extends React.Component {
                 //is an asynchronous function
                 this.setState({
                     repos: a,
-                    status: 'LOADED'
                 })
+                this.props.loaded();
             });
         }
         else {
@@ -56,20 +54,20 @@ class ReposList extends React.Component {
                 .then(repos => {
                     this.setState({
                         repos: repos,
-                        status: 'LOADED'
                     })
+                    this.props.loaded();
                 })
                 .catch(error => {
                     this.setState({
                         error: error,
-                        status: 'ERROR'
                     });
+                    this.props.error();
                 })
         }
     }
     render() {
         let el;
-        switch (this.state.status) {
+        switch (this.props.status) {
             case 'LOADING':
                 el = (
                     <div className="alert alert-info">
@@ -79,29 +77,39 @@ class ReposList extends React.Component {
                 break;
             case 'LOADED':
                 el = (
-                    <div>
-                        <div className="alert alert-info">
-                            <div className="row">
-                                {
-                                    this.state.repos.map((repo, index) => (
-                                        <div className="col-3 my-3" key={repo.id}>
-                                            <a href={`${repo.html_url}`} style={{ textDecoration: 'none' }}>
-                                                <div className="card">
-                                                    <img className="card-img-top" src={repo.owner.avatar_url} alt="avatar not available" />
-                                                    <div className="card-body">
-                                                        <h4 className="card-title">{repo.name}</h4>
-                                                    </div>
-                                                    <div className="card-body">
-                                                        <h4 className="card-title">{repo.stargazers_count}</h4>
-                                                    </div>
+                    <div clasName="my-4">
+                        <div className="row">
+                            {
+                                this.state.repos.map((repo, index) => (
+                                    <div class="col-3">
+                                        <div className="card my-3 p-3 bg-color">
+                                            <p className="my-4 index">#{index+1}</p>
+                                            <img className="card-img-top round" src={repo.owner.avatar_url} alt="avatar not available" width="150px" height="200px" />
+                                            <div className="card-body">
+                                                <a className="td repo-name" href={`${repo.html_url}`} target="_blank"  title="Go to repository" style={{ color: '#B21414', fontWeight:'bold', fontSize: '25px' }}>{repo.name}</a>
+                                                <div className="row" style={{ padding:'10px' }}>
+                                                    <img alt="" width="25px" src="https://ardentcollaborations.com/Central/assets/images_22/public.png" />&nbsp;&nbsp;&nbsp;
+                                                    <a className="td text" href={`${repo.owner.html_url}`} target="_blank" title="Go to profile">{repo.name}</a>
                                                 </div>
-                                            </a>
+                                                <div className="row" style={{ padding:'10px' }}>
+                                                    <img alt="" width="25px" src="https://cdn.freebiesupply.com/logos/large/2x/silver-star-logo-png-transparent.png" />&nbsp;&nbsp;&nbsp;
+                                                    <span className="text">{repo.stargazers_count} stars</span>
+                                                </div>
+                                                <div className="row" style={{ padding:'10px' }}>
+                                                    <img alt="" width="25px" src="https://cdn0.iconfinder.com/data/icons/hippicons-technology/64/code-fork-512.png" />&nbsp;&nbsp;&nbsp;
+                                                    <span className="text">{repo.forks} forks</span>
+                                                </div>
+                                                <div className="row" style={{ padding:'10px' }}>
+                                                    <img alt="" width="25px" src="https://www.pngrepo.com/download/121755/warning-symbol.png" />&nbsp;&nbsp;&nbsp;
+                                                    <span className="text">{repo.open_issues_count} open issues</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    ))
-                                }
-                            </div>
-                        </div>
-                    </div>
+                                    </div>
+                                ))
+                            }
+                        </div >
+                    </div >
                 );
                 break;
             case 'ERROR':
@@ -123,7 +131,7 @@ class ReposList extends React.Component {
         }
         return (
             <div className="container center">
-                <div className="pagination1">
+                <div className="pagination1 my-5">
                     <a data-page="All" onClick={() => this.changePage('all')}>All</a>
                     <a data-page="JavaScript" onClick={() => this.changePage('javascript')}>JavaScript</a>
                     <a data-page="Ruby" onClick={() => this.changePage('ruby')}>Ruby</a>
@@ -140,16 +148,15 @@ class ReposList extends React.Component {
             .then(repos => {
                 this.setState({
                     repos: repos,
-                    status: 'LOADED'
                 })
+                this.props.loaded();
             })
             .catch(error => {
                 this.setState({
                     error: error,
-                    status: 'ERROR'
                 });
-            }
-            )
+                this.props.errorS();
+            })
     }
 }
 
